@@ -27,9 +27,9 @@ Personal-RAG-Chatbot/ <br/>
 - Need 8GB+ USB drive for installation
 
 ## FastAPI Implementation Steps (Bite-sized for motivation)
-**Step 1**: Hello World endpoint (30 min)
-**Step 2**: Add document POST endpoint (45 min)
-**Step 3**: Store documents in memory (30 min)
+**Step 1**: Hello World endpoint (30 min)<br/>
+**Step 2**: Add document POST endpoint (45 min)<br/>
+**Step 3**: Store documents in memory (30 min)<br/>
 **Step 4**: Add GET endpoint to retrieve documents (30 min)
 
 ## Overall Project Timeline
