@@ -3,6 +3,14 @@
 ## Project Overview
 Building a personal website with RAG-powered chatbot to showcase ML/AI skills for job applications. Should be a great way to demonstrate end-to-end AI system development.
 
+## Github Structure
+my-rag-chatbot/
+├── README.md (the summary, plus progress updates)
+├── docs/ (detailed technical decisions)
+├── backend/ (FastAPI code)
+├── frontend/ (React code)
+└── deployment/ (Docker, config files)
+
 ## Recommended Tech Stack
 - **Vector Store**: Pinecone (managed, reliable, good free tier)
 - **Embeddings**: OpenAI text-embedding-3-small (cost-effective, widely used)
