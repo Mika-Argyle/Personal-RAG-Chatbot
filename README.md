@@ -3,12 +3,12 @@
 ## Project Overview
 Building a personal website with RAG-powered chatbot to showcase ML/AI skills for job applications. Should be a great way to demonstrate end-to-end AI system development.
 
-## Github Structure
-my-rag-chatbot/
-├── README.md (the summary, plus progress updates)
-├── docs/ (detailed technical decisions)
-├── backend/ (FastAPI code)
-├── frontend/ (React code)
+## Project Structure
+my-rag-chatbot/ <br/>
+├── README.md (the summary, plus progress updates)<br/>
+├── docs/ (detailed technical decisions)<br/>
+├── backend/ (FastAPI code)<br/>
+├── frontend/ (React code)<br/>
 └── deployment/ (Docker, config files)
 
 ## Recommended Tech Stack
