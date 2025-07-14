@@ -15,7 +15,8 @@
 - [ ] `git diff`
 - [ ] Test the code works
 - [ ] `git add .`
-- [ ] `git commit -m "type: descriptive message"`
+- [ ] `git commit -m "type: descriptive message `
+    > `this commit will do this (in prent tense)"`
 - [ ] `git push origin branch-name`
 
 ### End of Session
