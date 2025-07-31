@@ -12,7 +12,8 @@ It uses Pydantic for validation and type safety.
 
 import os
 from typing import Optional
-from pydantic import BaseSettings, field_validator
+from pydantic import field_validator
+from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 
