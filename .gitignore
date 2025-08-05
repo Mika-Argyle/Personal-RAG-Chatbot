@@ -1,26 +1,328 @@
-# Environment variables (contains API keys)
-.env
-backend/.env
+# ===============================================
+# RAG Chatbot Portfolio - Complete .gitignore
+# ===============================================
 
-# Python
+# ============= SENSITIVE DATA =============
+# API Keys and Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+config.local.json
+
+# ============= PYTHON BACKEND =============
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+*.venv/ 
+.ENV/
+
+# Python Cache
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+*.py[cod]
+*$py.class
 *.so
+
+# Distribution / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit Test / Coverage
+.tox/
+.nox/
 .coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
 .pytest_cache/
 
-# Virtual environment
-venv/
-backend/venv/
-env/
+# Jupyter Notebooks
+.ipynb_checkpoints
 
-# IDE
-.vscode/settings.json
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# mkdocs
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============= FRONTEND (Node.js/React) =============
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Next.js build output
+.next
+out/
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Vite
+.vite
+
+# ============= DATABASES & LOGS =============
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ============= DEPLOYMENT & CLOUD =============
+# Docker
+.dockerignore
+
+# Railway
+.railway/
+
+# Vercel
+.vercel
+
+# Netlify
+.netlify/
+
+# ============= DEVELOPMENT TOOLS =============
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+# JetBrains IDEs
 .idea/
+*.swp
+*.swo
 
-# OS
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============= OPERATING SYSTEMS =============
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============= TEMPORARY FILES =============
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# ============= PROJECT SPECIFIC =============
+# Vector database local storage
+vector_store/
+embeddings/
+data/raw/
+data/processed/
+data/temp/
+
+# Model weights and artifacts
+models/
+*.pkl
+*.joblib
+*.model
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Local configuration overrides
+config.local.py
+local_settings.py
+
+# API testing files
+test_requests/
+*.http
+
+# Documentation builds
+docs/_build/
+docs/build/
+
+# ============= SECURITY =============
+# Never commit these!
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials.json
+service-account.json
+auth.json
+
+# ============= MISC =============
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Image thumbnails
+*.thumbs
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
