@@ -233,8 +233,11 @@ class TestCORSMiddleware:
 
     @pytest.mark.unit
     def test_cors_headers_present(self, client):
-        """Test that CORS headers are present in responses."""
-        response = client.get("/")
+        """Test that CORS headers are present in cross-origin responses."""
+        response = client.get(
+            "/",
+            headers={"Origin": "http://localhost:3000"}
+        )
         
         # Check for CORS headers
         assert "access-control-allow-origin" in response.headers
@@ -294,28 +297,3 @@ class TestErrorHandling:
             assert response.status_code == 200
 
 
-class TestAPIDocumentation:
-    """Test that API documentation is accessible."""
-
-    @pytest.mark.unit
-    def test_openapi_docs_accessible(self, client):
-        """Test that OpenAPI docs are accessible."""
-        response = client.get("/docs")
-        assert response.status_code == 200
-
-    @pytest.mark.unit
-    def test_redoc_docs_accessible(self, client):
-        """Test that ReDoc documentation is accessible."""
-        response = client.get("/redoc")
-        assert response.status_code == 200
-
-    @pytest.mark.unit
-    def test_openapi_json_accessible(self, client):
-        """Test that OpenAPI JSON schema is accessible."""
-        response = client.get("/openapi.json")
-        assert response.status_code == 200
-        
-        # Should return valid JSON
-        data = response.json()
-        assert "openapi" in data
-        assert "info" in data

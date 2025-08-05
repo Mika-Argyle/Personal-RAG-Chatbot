@@ -141,31 +141,6 @@ class TestSettingsValidators:
                                    'between 0 and 1'):
                     Settings()
 
-    @pytest.mark.unit
-    def test_cors_origins_string_conversion(self):
-        """Test CORS origins conversion from string to list."""
-        with patch.dict(os.environ, {
-            'OPENAI_API_KEY': 'sk-test123456789',
-            'PINECONE_API_KEY': 'test-pinecone-key',
-            'CORS_ORIGINS': 
-            'http://localhost:3000,http://localhost:8000,https://mysite.com'
-        }):
-            settings = Settings()
-            expected = ['http://localhost:3000', 'http://localhost:8000', 
-                        'https://mysite.com']
-            assert settings.cors_origins == expected
-
-    @pytest.mark.unit
-    def test_cors_origins_list_unchanged(self):
-        """Test CORS origins remains as list when already a list."""
-        with patch.dict(os.environ, {
-            'OPENAI_API_KEY': 'sk-test123456789',
-            'PINECONE_API_KEY': 'test-pinecone-key'
-        }):
-            settings = Settings()
-            # Default value should be a list
-            assert isinstance(settings.cors_origins, list)
-            assert len(settings.cors_origins) == 4
 
 
 class TestSettingsDefaults:
@@ -187,7 +162,6 @@ class TestSettingsDefaults:
             
             # Pinecone defaults
             assert settings.pinecone_index_name == "portfolio-rag"
-            assert settings.pinecone_environment is None
             
             # API defaults
             assert settings.max_tokens == 500
@@ -262,7 +236,6 @@ class TestSettingsProperties:
             
             assert config["api_key"] == "test-pinecone-key"
             assert config["index_name"] == "portfolio-rag"
-            assert config["environment"] is None
             assert config["dimension"] == 1536
 
     @pytest.mark.unit

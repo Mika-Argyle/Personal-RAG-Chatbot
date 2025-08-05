@@ -311,6 +311,9 @@ credentials.json
 service-account.json
 auth.json
 
+# Claude Code configuration
+CLAUDE.md
+
 # ============= MISC =============
 # Archive files
 *.zip
