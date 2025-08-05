@@ -148,7 +148,12 @@ async def chat(request: ChatRequest):
             )
             
         except Exception as fallback_error:
-            return {"error": f"Chat failed: {str(fallback_error)}"}
+            return ChatResponse(
+                response=f"I apologize, but I'm experiencing technical difficulties. Please try again later.",
+                model_used="error",
+                sources_used=0,
+                sources=[]
+            )
 
 
 # API Endpoint - Knowledge Base Statistics (Read-only for visitors)
