@@ -34,7 +34,6 @@ class Settings(BaseSettings):
     # ===== Pinecone Configuration =====
     pinecone_api_key: str
     pinecone_index_name: str = "portfolio-rag"
-    pinecone_environment: Optional[str] = None  # Not needed for newer Pinecone versions
     
     # ===== API Configuration =====
     max_tokens: int = 500
@@ -128,7 +127,6 @@ class Settings(BaseSettings):
         return {
             "api_key": self.pinecone_api_key,
             "index_name": self.pinecone_index_name,
-            "environment": self.pinecone_environment,
             "dimension": self.embedding_dimension
         }
     
