@@ -13,10 +13,11 @@
 ### Before Committing
 - [ ] `git status`
 - [ ] `git diff`
-- [ ] Test the code works
+- [ ] **Run all tests**: `pytest tests/ -v`
+- [ ] **Verify tests pass**: Check for 0 failures
 - [ ] `git add .`
 - [ ] `git commit -m "type: descriptive message `
-    > `this commit will do this (in prent tense)"`
+    > `this commit will do this (in present tense)"`
 - [ ] `git push origin branch-name`
 
 ### End of Session
@@ -35,6 +36,82 @@ uvicorn app.main:app --reload
 
 # Test Pinecone connection
 curl http://localhost:8000/api/health/pinecone
+
+---
+
+## 🧪 Testing Commands
+
+### Run All Tests
+```bash
+# Run all tests with verbose output
+pytest tests/ -v
+
+# Run tests with short traceback (cleaner output)
+pytest tests/ --tb=short
+
+# Run tests and stop on first failure
+pytest tests/ -x
+```
+
+### Run Specific Test Categories
+```bash
+# Run only unit tests
+pytest -m unit
+
+# Run only integration tests
+pytest -m integration
+
+# Skip slow tests
+pytest -m "not slow"
+```
+
+### Run Specific Test Files
+```bash
+# Test configuration only
+pytest tests/test_config.py -v
+
+# Test API endpoints only
+pytest tests/test_api.py -v
+
+# Test specific function
+pytest tests/test_config.py::TestSettingsValidators::test_openai_api_key_valid -v
+```
+
+### Test Coverage and Reports
+```bash
+# Run tests with coverage report
+pytest tests/ --cov=app --cov-report=term-missing
+
+# Generate HTML coverage report
+pytest tests/ --cov=app --cov-report=html
+```
+
+### Development Testing Workflow
+```bash
+# 1. Run tests before starting work
+pytest tests/ -v
+
+# 2. Run specific tests while developing
+pytest tests/test_api.py::TestChatEndpoint -v
+
+# 3. Run all tests before committing
+pytest tests/ -v
+
+# 4. Verify no failures (exit code 0)
+echo $?  # Should output: 0
+```
+
+### Test Debugging
+```bash
+# Run with Python debugger on failures
+pytest tests/ --pdb
+
+# Show local variables in tracebacks
+pytest tests/ -l
+
+# Capture print statements (don't suppress stdout)
+pytest tests/ -s
+```
 
 ---
 
