@@ -2,7 +2,7 @@
 Tests for FastAPI endpoints and API functionality.
 
 Tests all API endpoints, request/response models, error handling,
-and middleware configuration.
+and middleware configuration with RAG integration.
 """
 
 import pytest
@@ -24,6 +24,38 @@ def mock_openai_response():
     mock_response.choices = [MagicMock()]
     mock_response.choices[0].message.content = "Test response from AI assistant"
     return mock_response
+
+
+@pytest.fixture
+def mock_rag_response():
+    """Mock RAG service response."""
+    return {
+        "response": "Test RAG response with context",
+        "model_used": "gpt-4o-mini",
+        "sources_used": 2,
+        "sources": [
+            {"id": "doc1", "score": 0.85, "metadata": {"type": "resume"}},
+            {"id": "doc2", "score": 0.75, "metadata": {"type": "project"}}
+        ]
+    }
+
+
+@pytest.fixture
+def mock_knowledge_base_stats():
+    """Mock knowledge base statistics."""
+    return {
+        "total_documents": 25,
+        "index_dimension": 1536,
+        "index_fullness": 0.1,
+        "embedding_model": "text-embedding-3-small",
+        "chat_model": "gpt-4o-mini",
+        "rag_settings": {
+            "top_k": 5,
+            "min_score": 0.7,
+            "chunk_size": 1000,
+            "chunk_overlap": 200
+        }
+    }
 
 
 class TestRootEndpoint:
@@ -81,54 +113,106 @@ class TestHealthEndpoint:
         assert isinstance(data["status"], str)
 
 
-class TestChatEndpoint:
-    """Test the chat endpoint (/api/chat)."""
+class TestRAGChatEndpoint:
+    """Test the RAG-enabled chat endpoint (/api/chat)."""
 
     @pytest.mark.unit
-    def test_chat_endpoint_success(self, client, mock_openai_response):
-        """Test successful chat request."""
-        with patch('app.main.openai_client.chat.completions.create', 
-                   new_callable=AsyncMock) as mock_create:
-            mock_create.return_value = mock_openai_response
+    def test_chat_endpoint_rag_success(self, client, mock_rag_response):
+        """Test successful RAG chat request."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag:
+            mock_rag.return_value = mock_rag_response
             
             response = client.post(
                 "/api/chat",
-                json={"message": "Hello, how are you?"}
+                json={"message": "Tell me about your experience"}
             )
             
             assert response.status_code == 200
             data = response.json()
             
+            # Check new RAG response structure
             assert "response" in data
             assert "model_used" in data
-            assert data["response"] == "Test response from AI assistant"
+            assert "sources_used" in data
+            assert "sources" in data
+            
+            assert data["response"] == "Test RAG response with context"
             assert data["model_used"] == "gpt-4o-mini"
+            assert data["sources_used"] == 2
+            assert len(data["sources"]) == 2
 
     @pytest.mark.unit
-    def test_chat_endpoint_openai_call_parameters(self, client, 
-                                                  mock_openai_response):
-        """Test that OpenAI is called with correct parameters."""
-        with patch('app.main.openai_client.chat.completions.create', 
-                   new_callable=AsyncMock) as mock_create:
-            mock_create.return_value = mock_openai_response
+    def test_chat_endpoint_with_chat_history(self, client, mock_rag_response):
+        """Test chat request with chat history."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag:
+            mock_rag.return_value = mock_rag_response
             
-            test_message = "What is Python?"
+            chat_history = [
+                {"role": "user", "content": "Previous question"},
+                {"role": "assistant", "content": "Previous answer"}
+            ]
+            
+            response = client.post(
+                "/api/chat",
+                json={
+                    "message": "Follow up question", 
+                    "chat_history": chat_history
+                }
+            )
+            
+            assert response.status_code == 200
+            
+            # Verify RAG service was called with history
+            mock_rag.assert_called_once_with(
+                user_message="Follow up question",
+                chat_history=chat_history
+            )
+
+    @pytest.mark.unit
+    def test_chat_endpoint_fallback_to_openai(self, client, mock_openai_response):
+        """Test fallback to OpenAI when RAG service fails."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag, \
+             patch('app.main.openai_client.chat.completions.create', 
+                   new_callable=AsyncMock) as mock_openai:
+            
+            # Make RAG service fail
+            mock_rag.side_effect = Exception("RAG service error")
+            mock_openai.return_value = mock_openai_response
+            
+            response = client.post(
+                "/api/chat",
+                json={"message": "Test fallback"}
+            )
+            
+            assert response.status_code == 200
+            data = response.json()
+            
+            # Should use fallback response
+            assert data["response"] == "Test response from AI assistant" 
+            assert data["sources_used"] == 0
+            assert data["sources"] == []
+            
+            # Verify fallback was used
+            mock_openai.assert_called_once()
+
+    @pytest.mark.unit
+    def test_chat_endpoint_rag_parameters(self, client, mock_rag_response):
+        """Test that RAG service is called with correct parameters."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag:
+            mock_rag.return_value = mock_rag_response
+            
+            test_message = "What are your skills?"
             client.post("/api/chat", json={"message": test_message})
             
-            # Verify OpenAI was called with correct parameters
-            mock_create.assert_called_once()
-            call_args = mock_create.call_args
-            
-            assert call_args.kwargs["model"] == "gpt-4o-mini"
-            assert call_args.kwargs["max_tokens"] == 500
-            assert call_args.kwargs["temperature"] == 0.7
-            
-            # Check messages structure
-            messages = call_args.kwargs["messages"]
-            assert len(messages) == 2
-            assert messages[0]["role"] == "system"
-            assert messages[1]["role"] == "user"
-            assert messages[1]["content"] == test_message
+            # Verify RAG service was called with correct parameters
+            mock_rag.assert_called_once_with(
+                user_message=test_message,
+                chat_history=[]  # Empty list when no history provided
+            )
 
     @pytest.mark.unit
     def test_chat_endpoint_invalid_request_missing_message(self, client):
@@ -160,58 +244,121 @@ class TestChatEndpoint:
         assert response.status_code == 422
 
     @pytest.mark.unit
-    def test_chat_endpoint_openai_error(self, client):
-        """Test chat endpoint when OpenAI API fails."""
-        with patch('app.main.openai_client.chat.completions.create', 
-                   new_callable=AsyncMock) as mock_create:
-            mock_create.side_effect = Exception("OpenAI API Error")
+    def test_chat_endpoint_rag_service_error(self, client, mock_openai_response):
+        """Test chat endpoint when RAG service has an error but returns error response."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag, \
+             patch('app.main.openai_client.chat.completions.create', 
+                   new_callable=AsyncMock) as mock_openai:
+            
+            # Make RAG return error response (simulating handled errors)
+            mock_rag.return_value = {
+                "error": "RAG processing failed: vector search error",
+                "response": "I apologize, but I'm having trouble accessing my knowledge base right now. Please try again.",
+                "model_used": "gpt-4o-mini",
+                "sources_used": 0,
+                "sources": []
+            }
             
             response = client.post(
                 "/api/chat",
                 json={"message": "Hello"}
             )
             
-            assert response.status_code == 200  # App handles errors gracefully
+            assert response.status_code == 200
             data = response.json()
             
-            assert "error" in data
-            assert "Chat failed" in data["error"]
+            # Should get the error response from RAG service
+            assert "I apologize" in data["response"]
+            assert data["sources_used"] == 0
 
     @pytest.mark.unit
-    def test_chat_endpoint_system_message(self, client, mock_openai_response):
-        """Test that system message is properly configured."""
-        with patch('app.main.openai_client.chat.completions.create', 
-                   new_callable=AsyncMock) as mock_create:
-            mock_create.return_value = mock_openai_response
+    def test_chat_endpoint_complete_failure(self, client):
+        """Test chat endpoint when both RAG and fallback fail."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag, \
+             patch('app.main.openai_client.chat.completions.create', 
+                   new_callable=AsyncMock) as mock_openai:
             
-            client.post("/api/chat", json={"message": "Test"})
+            # Make both services fail
+            mock_rag.side_effect = Exception("RAG failed")
+            mock_openai.side_effect = Exception("OpenAI failed")
             
-            call_args = mock_create.call_args
-            messages = call_args.kwargs["messages"]
-            system_message = messages[0]
+            response = client.post(
+                "/api/chat",
+                json={"message": "Test complete failure"}
+            )
             
-            assert system_message["role"] == "system"
-            expected_content = ("You are a helpful assistant for a "
-                              "software developer's portfolio website.")
-            assert system_message["content"] == expected_content
+            assert response.status_code == 200
+            data = response.json()
+            
+            # Should return graceful error response as ChatResponse
+            assert "I apologize" in data["response"]
+            assert "technical difficulties" in data["response"] 
+            assert data["model_used"] == "error"
+            assert data["sources_used"] == 0
+            assert data["sources"] == []
+
+
+class TestKnowledgeBaseStatsEndpoint:
+    """Test the knowledge base stats endpoint."""
+
+    @pytest.mark.unit
+    def test_knowledge_base_stats_success(self, client, mock_knowledge_base_stats):
+        """Test successful knowledge base stats request."""
+        with patch('app.main.rag_service.get_knowledge_base_stats', 
+                   new_callable=AsyncMock) as mock_stats:
+            mock_stats.return_value = mock_knowledge_base_stats
+            
+            response = client.get("/api/knowledge-base/stats")
+            
+            assert response.status_code == 200
+            data = response.json()
+            
+            # Check stats structure
+            assert data["total_documents"] == 25
+            assert data["index_dimension"] == 1536
+            assert data["embedding_model"] == "text-embedding-3-small"
+            assert data["chat_model"] == "gpt-4o-mini"
+            assert "rag_settings" in data
+
+    @pytest.mark.unit  
+    def test_knowledge_base_stats_failure(self, client):
+        """Test knowledge base stats endpoint handles failures."""
+        with patch('app.main.rag_service.get_knowledge_base_stats', 
+                   new_callable=AsyncMock) as mock_stats:
+            mock_stats.side_effect = Exception("Stats service failed")
+            
+            response = client.get("/api/knowledge-base/stats")
+            
+            assert response.status_code == 500
+            data = response.json()
+            assert "detail" in data
+            assert "Failed to get knowledge base stats" in data["detail"]
 
 
 class TestRequestResponseModels:
     """Test Pydantic request/response models."""
 
     @pytest.mark.unit
-    def test_chat_request_model_valid(self, client):
-        """Test ChatRequest model accepts valid data."""
-        valid_requests = [
-            {"message": "Hello"},
-            {"message": "What is machine learning?"},
-            {"message": "Tell me about your projects"},
-        ]
-        
-        for request_data in valid_requests:
-            response = client.post("/api/chat", json=request_data)
-            # Should not return validation error (422)
-            assert response.status_code != 422
+    def test_chat_request_model_valid(self, client, mock_rag_response):
+        """Test ChatRequest model accepts valid data including chat history."""
+        with patch('app.main.rag_service.chat_with_context', 
+                   new_callable=AsyncMock) as mock_rag:
+            mock_rag.return_value = mock_rag_response
+            
+            valid_requests = [
+                {"message": "Hello"},
+                {"message": "Hello", "chat_history": []},
+                {"message": "Hello", "chat_history": [
+                    {"role": "user", "content": "Previous question"}
+                ]},
+            ]
+            
+            for request_data in valid_requests:
+                response = client.post("/api/chat", json=request_data)
+                # Should not return validation error (422)
+                assert response.status_code == 200
 
     @pytest.mark.unit
     def test_chat_request_model_invalid(self, client):
@@ -221,6 +368,7 @@ class TestRequestResponseModels:
             {"msg": "Hello"},  # Wrong field name
             {"message": 123},  # Wrong data type
             {"message": None},  # Null value
+            {"message": "Hello", "chat_history": "invalid"},  # Wrong history type
         ]
         
         for request_data in invalid_requests:
