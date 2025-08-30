@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     
     # ===== RAG Configuration =====
     rag_top_k: int = 5  # Number of similar documents to retrieve
-    rag_min_score: float = 0.7  # Minimum similarity score threshold
+    rag_min_score: float = 0.3  # Minimum similarity score threshold
     chunk_size: int = 1000  # Document chunking size
     chunk_overlap: int = 200  # Overlap between chunks
     
