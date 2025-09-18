@@ -7,8 +7,7 @@
 - [ ] `cd backend`
 - [ ] `source venv/bin/activate`
 - [ ] `git status`
-- [ ] `git checkout main && git pull origin main`
-- [ ] Start VS Code: `code .`
+- [ ] `git checkout branch-name && git pull origin main`
 
 ### Before Committing
 - [ ] `git status`
@@ -29,7 +28,7 @@
 
 ## 🤖 RAG Chatbot Specific Commands
 
-# Start development session
+# Uvicorn Terminal
 cd ~/Development/Projects/Personal-RAG-Chatbot/backend
 source venv/bin/activate
 uvicorn app.main:app --reload
