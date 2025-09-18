@@ -170,7 +170,7 @@ class TestSettingsDefaults:
             
             # RAG defaults
             assert settings.rag_top_k == 5
-            assert settings.rag_min_score == 0.7
+            assert settings.rag_min_score == 0.3
             assert settings.chunk_size == 1000
             assert settings.chunk_overlap == 200
             
@@ -249,7 +249,7 @@ class TestSettingsProperties:
             config = settings.get_rag_config()
             
             assert config["top_k"] == 5
-            assert config["min_score"] == 0.7
+            assert config["min_score"] == 0.3
             assert config["chunk_size"] == 1000
             assert config["chunk_overlap"] == 200
 
