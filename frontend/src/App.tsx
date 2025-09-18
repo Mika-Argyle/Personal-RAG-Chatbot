@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { Message, ChatState } from './types/chat';
 import { chatService } from './services/api';
@@ -11,6 +11,12 @@ function App() {
   });
   const [inputMessage, setInputMessage] = useState('');
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatState.messages, chatState.isLoading]);
 
   // Check backend connection on startup
   useEffect(() => {
@@ -102,6 +108,8 @@ function App() {
               <div className="message-content">Thinking...</div>
             </div>
           )}
+          
+          <div ref={messagesEndRef} />
         </div>
 
         <div className="input-area">
@@ -114,7 +122,7 @@ function App() {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
               placeholder="Ask me about my experience and projects..."
               disabled={chatState.isLoading || backendStatus !== 'connected'}
             />

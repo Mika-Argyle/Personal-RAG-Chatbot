@@ -1,10 +1,21 @@
 /* Professional RAG Chatbot Styling */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed; /* Keep gradient fixed during scroll */
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
 .App {
   display: flex;
   flex-direction: column;
   height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: transparent; /* Let body background show through */
+  position: relative;
 }
 
 .App-header {
@@ -67,6 +78,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-height: 0; /* Important for flex scrolling */
+  background: transparent; /* Ensure background doesn't interfere */
 }
 
 .message {
@@ -119,21 +132,24 @@
 
 .message-timestamp {
   font-size: 0.75rem;
-  opacity: 0.6;
+  opacity: 0.7;
   margin-top: 0.25rem;
   color: white;
 }
 
 .message.user .message-timestamp {
   text-align: right;
-  color: #666;
+  color: #d6e2ec;
+  opacity: 0.7;
 }
 
 .input-area {
-  padding: 1.5rem 0;
+  padding: 1.5rem 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
+  border-radius: 20px 20px 0 0;
+  margin: 0 1rem;
 }
 
 .error-message {
