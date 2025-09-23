@@ -3,6 +3,9 @@
 ## Project Overview
 Building a personal website with RAG-powered chatbot to showcase ML/AI skills for job applications. Should be a great way to demonstrate end-to-end AI system development.
 
+## How Can I View the Project?
+Project will be live after deployment in late September, all code is visible now, and a live demo is available upon employers' request.
+
 ## Project Structure
 Personal-RAG-Chatbot/ <br/>
 ├── README.md (the summary, plus progress updates)<br/>
