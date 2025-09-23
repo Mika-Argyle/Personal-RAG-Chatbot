@@ -8,11 +8,11 @@ Project will be on my personal website after deployment in late September, all c
 
 ## Project Structure
 Personal-RAG-Chatbot/ <br/>
-├── README.md (the summary, plus progress updates)<br/>
-├── docs/ (detailed technical decisions)<br/>
-├── backend/ (FastAPI code)<br/>
-├── frontend/ (React code)<br/>
-└── deployment/ (Docker, config files)
+├── README.md (the summarys)<br/> ✔
+├── docs/ (detailed technical decisions)<br/> ✔
+├── backend/ (FastAPI code)<br/> ✔
+├── frontend/ (React code)<br/> ✔
+└── deployment/ (Docker, config files) IN-PROGRESS
 
 ## Chosen Tech Stack
 - **Vector Store**: Pinecone (managed, reliable, good free tier) ✔️
