@@ -8,10 +8,10 @@ Project will be on my personal website after deployment in late September, all c
 
 ## Project Structure
 Personal-RAG-Chatbot/ <br/>
-├── README.md (the summarys)<br/> ✔
-├── docs/ (detailed technical decisions)<br/> ✔
-├── backend/ (FastAPI code)<br/> ✔
-├── frontend/ (React code)<br/> ✔
+├── README.md (the summarys)<br/> 
+├── docs/ (detailed technical decisions)<br/> 
+├── backend/ (FastAPI code)<br/> 
+├── frontend/ (React code)<br/> 
 └── deployment/ (Docker, config files) IN-PROGRESS
 
 ## Chosen Tech Stack
