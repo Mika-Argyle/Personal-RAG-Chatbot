@@ -24,7 +24,7 @@ Personal-RAG-Chatbot/ <br/>
 - **Deployment**: Vercel for frontend **IN-PROGRESS
 
 ## Overall Project Timeline
-2-3 weeks part-time, building incrementally:
+2-3 weeks (of work, will take longer) part-time, building incrementally:
 1. Basic FastAPI backend
 2. OpenAI integration for chat
 3. Pinecone vector storage/retrieval
