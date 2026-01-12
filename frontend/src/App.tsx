@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import './App.css';
 import { Message, ChatState } from './types/chat';
 import { chatService } from './services/api';
@@ -90,7 +91,11 @@ function App() {
           {chatState.messages.map((message) => (
             <div key={message.id} className={`message ${message.isUser ? 'user' : 'assistant'}`}>
               <div className="message-content">
-                {message.content}
+                {message.isUser ? (
+                  message.content
+                ) : (
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                )}
                 {message.contextUsed && (
                   <div className="context-indicator">
                     🧠 Used RAG context
